@@ -1,56 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using MedicalCenter.Context;
+﻿using Microsoft.AspNetCore.Mvc;
 using MedicalCenter.Models;
+using MedicalCenter.interfaces;
 
 namespace MedicalCenter.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SpecialitiesController : ControllerBase
+    public class SpecialityController : ControllerBase
     {
-        private readonly MedicalContext _context;
+        private readonly ISpecialityRepository _specialityService;
 
-        public SpecialitiesController(MedicalContext context)
+        public SpecialityController(ISpecialityRepository specialityService)
         {
-            _context = context;
+            _specialityService = specialityService;
         }
 
-        // GET: api/Specialities
+        // GET: api/Speciality
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Speciality>>> GetSpeciality()
+        public async Task<ActionResult> GetSpecialities()
         {
-            var speciality =  await _context.Speciality.ToListAsync();
-
-            if (!speciality.Any())
-            {
-                return NotFound(new { message = "No speciality found in the speciality list." });
-            }
-
-            return speciality;
+            var specialities = await _specialityService.GetSpeciality();
+            return Ok(specialities);
         }
 
-        // GET: api/Specialities/5
+        // GET: api/Speciality/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Speciality>> GetSpeciality(int id)
+        public async Task<ActionResult> GetSpeciality(int id)
         {
-            var speciality = await _context.Speciality.FindAsync(id);
-
-            if (speciality == null)
+            var speciality = await _specialityService.GetSpeciality(id);
+            if (speciality.Value == null)
             {
-                return NotFound(new { message = "Speciality cannot be found." });
+                return NotFound();
             }
-
-            return speciality;
+            return Ok(speciality.Value);
         }
 
-        // PUT: api/Specialities/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // PUT: api/Speciality/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutSpeciality(int id, Speciality speciality)
         {
@@ -59,57 +44,24 @@ namespace MedicalCenter.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(speciality).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!SpecialityExists(id))
-                {
-                    return NotFound(new { message = "Speciality not found." });
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            var result = await _specialityService.PutSpeciality(id, speciality);
+            return result;
         }
 
-        // POST: api/Specialities
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // POST: api/Speciality
         [HttpPost]
         public async Task<ActionResult<Speciality>> PostSpeciality(Speciality speciality)
         {
-            _context.Speciality.Add(speciality);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetSpeciality", new { id = speciality.SpecialityID }, speciality);
+            var createdSpeciality = await _specialityService.PostSpeciality(speciality);
+            return CreatedAtAction(nameof(GetSpeciality), new { id = createdSpeciality.Value.SpecialityID }, createdSpeciality.Value);
         }
 
-        // DELETE: api/Specialities/5
+        // DELETE: api/Speciality/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSpeciality(int id)
         {
-            var speciality = await _context.Speciality.FindAsync(id);
-            if (speciality == null)
-            {
-                return NotFound(new { message = "Speciality not found." });
-            }
-
-            _context.Speciality.Remove(speciality);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool SpecialityExists(int id)
-        {
-            return _context.Speciality.Any(e => e.SpecialityID == id);
+            var result = await _specialityService.DeleteSpeciality(id);
+            return result;
         }
     }
 }

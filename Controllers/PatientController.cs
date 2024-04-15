@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MedicalCenter.Context;
 using MedicalCenter.Models;
+using MedicalCenter.interfaces;
 
 namespace MedicalCenter.Controllers
 {
@@ -14,43 +10,43 @@ namespace MedicalCenter.Controllers
     [ApiController]
     public class PatientController : ControllerBase
     {
-        private readonly MedicalContext _context;
+        private readonly IPatientRepository _repository;
 
-        public PatientController(MedicalContext context)
+        public PatientController(IPatientRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         // GET: api/Patient
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Patient>>> GetPatients()
         {
-            var result =  await _context.Patients.ToListAsync();
+            var result = await _repository.GetPatients();
 
             if (!result.Any())
             {
                 return NotFound(new { message = "No patient found in the patient list." });
             }
 
-            return result;
+            return result.ToList();
         }
 
         // GET: api/Patient/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Patient>> GetPatient(int id)
         {
-            var patient = await _context.Patients.FindAsync(id);
-
-            if (patient == null)
+            try
             {
-                return NotFound(new {message = "Patient not found."});
+                var patient = await _repository.GetPatient(id);
+                return patient;
             }
-
-            return patient;
+            catch (KeyNotFoundException)
+            {
+                return NotFound(new { message = "Patient not found." });
+            }
         }
 
         // PUT: api/Patient/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPatient(int id, Patient patient)
         {
@@ -59,57 +55,50 @@ namespace MedicalCenter.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(patient).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                await _repository.UpdatePatient(patient);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound(new { message = "Patient not found." });
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!PatientExists(id))
-                {
-                    return NotFound(new { message = "Patient cannot be found." });
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
 
             return NoContent();
         }
 
         // POST: api/Patient
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Patient>> PostPatient(Patient patient)
         {
-            _context.Patients.Add(patient);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetPatient", new { id = patient.PatientID }, patient);
+            try
+            {
+                var createdPatient = await _repository.AddPatient(patient);
+                return CreatedAtAction("GetPatient", new { id = createdPatient.PatientID }, createdPatient);
+            }
+            catch (ArgumentNullException)
+            {
+                return BadRequest(new { message = "Patient cannot be null." });
+            }
         }
 
         // DELETE: api/Patient/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePatient(int id)
         {
-            var patient = await _context.Patients.FindAsync(id);
-            if (patient == null)
+            try
             {
-                return NotFound();
+                await _repository.DeletePatient(id);
+                return NoContent();
             }
-
-            _context.Patients.Remove(patient);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool PatientExists(int id)
-        {
-            return _context.Patients.Any(e => e.PatientID == id);
+            catch (KeyNotFoundException)
+            {
+                return NotFound(new { message = "Patient not found." });
+            }
         }
     }
 }

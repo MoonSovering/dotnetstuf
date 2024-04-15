@@ -7,17 +7,7 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
-    "ReturnTypes": [
-      {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[MedicalCenter.Models.Appointment, MedicalCenter, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "ReturnTypes": []
   },
   {
     "ContainingType": "MedicalCenter.Controllers.AppointmentsController",
@@ -59,17 +49,7 @@
         "IsRequired": true
       }
     ],
-    "ReturnTypes": [
-      {
-        "Type": "MedicalCenter.Models.Appointment",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "ReturnTypes": []
   },
   {
     "ContainingType": "MedicalCenter.Controllers.AppointmentsController",
@@ -327,29 +307,19 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "MedicalCenter.Controllers.SpecialitiesController",
-    "Method": "GetSpeciality",
-    "RelativePath": "api/Specialities",
+    "ContainingType": "MedicalCenter.Controllers.SpecialityController",
+    "Method": "GetSpecialities",
+    "RelativePath": "api/Speciality",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
-    "ReturnTypes": [
-      {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[MedicalCenter.Models.Speciality, MedicalCenter, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "ReturnTypes": []
   },
   {
-    "ContainingType": "MedicalCenter.Controllers.SpecialitiesController",
+    "ContainingType": "MedicalCenter.Controllers.SpecialityController",
     "Method": "PostSpeciality",
-    "RelativePath": "api/Specialities",
+    "RelativePath": "api/Speciality",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -373,9 +343,9 @@
     ]
   },
   {
-    "ContainingType": "MedicalCenter.Controllers.SpecialitiesController",
+    "ContainingType": "MedicalCenter.Controllers.SpecialityController",
     "Method": "GetSpeciality",
-    "RelativePath": "api/Specialities/{id}",
+    "RelativePath": "api/Speciality/{id}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -386,22 +356,12 @@
         "IsRequired": true
       }
     ],
-    "ReturnTypes": [
-      {
-        "Type": "MedicalCenter.Models.Speciality",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "ReturnTypes": []
   },
   {
-    "ContainingType": "MedicalCenter.Controllers.SpecialitiesController",
+    "ContainingType": "MedicalCenter.Controllers.SpecialityController",
     "Method": "PutSpeciality",
-    "RelativePath": "api/Specialities/{id}",
+    "RelativePath": "api/Speciality/{id}",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -420,9 +380,9 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "MedicalCenter.Controllers.SpecialitiesController",
+    "ContainingType": "MedicalCenter.Controllers.SpecialityController",
     "Method": "DeleteSpeciality",
-    "RelativePath": "api/Specialities/{id}",
+    "RelativePath": "api/Speciality/{id}",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,

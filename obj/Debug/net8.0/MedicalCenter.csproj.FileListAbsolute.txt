@@ -254,3 +254,4 @@ C:\Users\USUARIO\Desktop\.Net\MedicalCenter\MedicalCenter\obj\Debug\net8.0\Medic
 C:\Users\USUARIO\Desktop\.Net\MedicalCenter\MedicalCenter\obj\Debug\net8.0\MedicalCenter.RazorAssemblyInfo.cs
 C:\Users\USUARIO\Desktop\.Net\MedicalCenter\MedicalCenter\bin\Debug\net8.0\Castle.Core.dll
 C:\Users\USUARIO\Desktop\.Net\MedicalCenter\MedicalCenter\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Proxies.dll
+C:\Users\USUARIO\Desktop\.Net\MedicalCenter\MedicalCenter\obj\Debug\net8.0\MedicalCenter.sourcelink.json
