@@ -1,37 +1,29 @@
-﻿using MedicalCenter.Context;
-using MedicalCenter.interfaces;
+﻿using MedicalCenter.Interfaces;
 using MedicalCenter.Models;
+using MedicalCenter.Repository;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace MedicalCenter.Services
 {
-    public class SpecialityService : ISpecialityRepository
+    public class SpecialityService: ISpecialityRepository
     {
-        private readonly MedicalContext _context;
+        private readonly SpecialityRepository _specialityRepository;
 
-        public SpecialityService(MedicalContext context)
+        public SpecialityService(SpecialityRepository specialityRepository)
         {
-            _context = context;
+            _specialityRepository = specialityRepository;
         }
 
         public async Task<ActionResult<IEnumerable<Speciality>>> GetSpeciality()
         {
-            var specialities = await _context.Speciality.ToListAsync();
-
-            if (!specialities.Any())
-            {
-                throw new KeyNotFoundException("No Specialities found in the speciality list.");
-            }
-
-            return specialities;
+            return await _specialityRepository.GetSpeciality();
         }
 
         public async Task<ActionResult<Speciality>> GetSpeciality(int id)
         {
-            var speciality = await _context.Speciality.FindAsync(id);
+            var speciality = await _specialityRepository.GetSpeciality(id);
 
-            if (speciality == null)
+            if (speciality.Value == null)
             {
                 throw new KeyNotFoundException("Speciality not found.");
             }
@@ -51,15 +43,13 @@ namespace MedicalCenter.Services
                 throw new ArgumentException("Speciality ID mismatch.");
             }
 
-            if (!_context.Speciality.Any(e => e.SpecialityID == speciality.SpecialityID))
+            var existingSpeciality = await _specialityRepository.GetSpeciality(speciality.SpecialityID);
+            if (existingSpeciality.Value == null)
             {
                 throw new KeyNotFoundException("Speciality not found.");
             }
 
-            _context.Entry(speciality).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-
-            return new NoContentResult();
+            return await _specialityRepository.PutSpeciality(id, speciality);
         }
 
         public async Task<ActionResult<Speciality>> PostSpeciality(Speciality speciality)
@@ -69,24 +59,18 @@ namespace MedicalCenter.Services
                 throw new ArgumentNullException(nameof(speciality));
             }
 
-            _context.Speciality.Add(speciality);
-            await _context.SaveChangesAsync();
-
-            return speciality;
+            return await _specialityRepository.PostSpeciality(speciality);
         }
 
         public async Task<IActionResult> DeleteSpeciality(int id)
         {
-            var speciality = await _context.Speciality.FindAsync(id);
-            if (speciality == null)
+            var speciality = await _specialityRepository.GetSpeciality(id);
+            if (speciality.Value == null)
             {
                 throw new KeyNotFoundException("Speciality not found.");
             }
 
-            _context.Speciality.Remove(speciality);
-            await _context.SaveChangesAsync();
-
-            return new NoContentResult();
+            return await _specialityRepository.DeleteSpeciality(id);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MedicalCenter.Models;
-using MedicalCenter.interfaces;
+using MedicalCenter.Services;
 
 namespace MedicalCenter.Controllers
 {
@@ -8,9 +8,9 @@ namespace MedicalCenter.Controllers
     [ApiController]
     public class AppointmentsController : ControllerBase
     {
-        private readonly IAppointmentRepository _appointmentService;
+        private readonly AppointmentService _appointmentService;
 
-        public AppointmentsController(IAppointmentRepository appointmentService)
+        public AppointmentsController(AppointmentService appointmentService)
         {
             _appointmentService = appointmentService;
         }

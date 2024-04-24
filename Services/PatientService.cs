@@ -1,27 +1,26 @@
-﻿using MedicalCenter.Context;
-using MedicalCenter.interfaces;
+﻿using MedicalCenter.Interfaces;
 using MedicalCenter.Models;
-using Microsoft.EntityFrameworkCore;
+using MedicalCenter.Repository;
 
 namespace MedicalCenter.Services
 {
-    public class PatientService : IPatientRepository
+    public class PatientService: IPatientRepository
     {
-        private readonly MedicalContext _context;
+        private readonly PatientRepository _patientRepository;
 
-        public PatientService(MedicalContext context)
+        public PatientService(PatientRepository patientRepository)
         {
-            _context = context;
+            _patientRepository = patientRepository;
         }
 
         public async Task<IEnumerable<Patient>> GetPatients()
         {
-            return await _context.Patients.ToListAsync();
+            return await _patientRepository.GetPatients();
         }
 
         public async Task<Patient> GetPatient(int id)
         {
-            var patient = await _context.Patients.FindAsync(id);
+            var patient = await _patientRepository.GetPatient(id);
 
             if (patient == null)
             {
@@ -38,10 +37,7 @@ namespace MedicalCenter.Services
                 throw new ArgumentNullException(nameof(patient));
             }
 
-            _context.Patients.Add(patient);
-            await _context.SaveChangesAsync();
-
-            return patient;
+            return await _patientRepository.AddPatient(patient);
         }
 
         public async Task<Patient> UpdatePatient(Patient patient)
@@ -51,27 +47,23 @@ namespace MedicalCenter.Services
                 throw new ArgumentNullException(nameof(patient));
             }
 
-            if (!_context.Patients.Any(e => e.PatientID == patient.PatientID))
+            if (!_patientRepository.GetPatients().Result.Any(e => e.PatientID == patient.PatientID))
             {
                 throw new KeyNotFoundException("Patient not found.");
             }
 
-            _context.Entry(patient).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-
-            return patient;
+            return await _patientRepository.UpdatePatient(patient);
         }
 
         public async Task DeletePatient(int id)
         {
-            var patient = await _context.Patients.FindAsync(id);
+            var patient = await _patientRepository.GetPatient(id);
             if (patient == null)
             {
                 throw new KeyNotFoundException("Patient not found.");
             }
 
-            _context.Patients.Remove(patient);
-            await _context.SaveChangesAsync();
+            await _patientRepository.DeletePatient(id);
         }
     }
 }

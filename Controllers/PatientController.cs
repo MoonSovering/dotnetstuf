@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MedicalCenter.Models;
-using MedicalCenter.interfaces;
+using MedicalCenter.Services;
 
 namespace MedicalCenter.Controllers
 {
@@ -10,18 +10,18 @@ namespace MedicalCenter.Controllers
     [ApiController]
     public class PatientController : ControllerBase
     {
-        private readonly IPatientRepository _repository;
+        private readonly PatientService _service;
 
-        public PatientController(IPatientRepository repository)
+        public PatientController(PatientService service)
         {
-            _repository = repository;
+            _service = service;
         }
 
         // GET: api/Patient
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Patient>>> GetPatients()
         {
-            var result = await _repository.GetPatients();
+            var result = await _service.GetPatients();
 
             if (!result.Any())
             {
@@ -37,7 +37,7 @@ namespace MedicalCenter.Controllers
         {
             try
             {
-                var patient = await _repository.GetPatient(id);
+                var patient = await _service.GetPatient(id);
                 return patient;
             }
             catch (KeyNotFoundException)
@@ -57,7 +57,7 @@ namespace MedicalCenter.Controllers
 
             try
             {
-                await _repository.UpdatePatient(patient);
+                await _service.UpdatePatient(patient);
             }
             catch (KeyNotFoundException)
             {
@@ -77,7 +77,7 @@ namespace MedicalCenter.Controllers
         {
             try
             {
-                var createdPatient = await _repository.AddPatient(patient);
+                var createdPatient = await _service.AddPatient(patient);
                 return CreatedAtAction("GetPatient", new { id = createdPatient.PatientID }, createdPatient);
             }
             catch (ArgumentNullException)
@@ -92,7 +92,7 @@ namespace MedicalCenter.Controllers
         {
             try
             {
-                await _repository.DeletePatient(id);
+                await _service.DeletePatient(id);
                 return NoContent();
             }
             catch (KeyNotFoundException)

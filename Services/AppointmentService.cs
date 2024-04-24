@@ -1,25 +1,24 @@
-﻿using MedicalCenter.Context;
-using MedicalCenter.interfaces;
+﻿using MedicalCenter.Interfaces;
 using MedicalCenter.Models;
+using MedicalCenter.Repository;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace MedicalCenter.Services
 {
-    public class AppointmentService : IAppointmentRepository
+    public class AppointmentService: IAppointmentRepository
     {
-        private readonly MedicalContext _context;
+        private readonly AppointmentRepository _appointmentRepository;
 
-        public AppointmentService(MedicalContext context)
+        public AppointmentService(AppointmentRepository appointmentRepository)
         {
-            _context = context;
+            _appointmentRepository = appointmentRepository;
         }
 
         public async Task<ActionResult<IEnumerable<Appointment>>> GetAppointments()
         {
-            var appointments = await _context.Appointments.ToListAsync();
+            var appointments = await _appointmentRepository.GetAppointments();
 
-            if (!appointments.Any())
+            if (!appointments.Value.Any())
             {
                 throw new KeyNotFoundException("No Appointments found in the appointment list.");
             }
@@ -29,7 +28,7 @@ namespace MedicalCenter.Services
 
         public async Task<ActionResult<Appointment>> GetAppointment(int id)
         {
-            var appointment = await _context.Appointments.FindAsync(id);
+            var appointment = await _appointmentRepository.GetAppointment(id);
 
             if (appointment == null)
             {
@@ -51,15 +50,13 @@ namespace MedicalCenter.Services
                 throw new ArgumentException("Appointment ID mismatch.");
             }
 
-            if (!_context.Appointments.Any(e => e.AppointmentID == appointment.AppointmentID))
+            var existingAppointment = await _appointmentRepository.GetAppointment(appointment.AppointmentID);
+            if (existingAppointment.Value == null)
             {
                 throw new KeyNotFoundException("Appointment not found.");
             }
 
-            _context.Entry(appointment).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-
-            return new NoContentResult();
+            return await _appointmentRepository.PutAppointment(id, appointment);
         }
 
         public async Task<ActionResult<Appointment>> PostAppointment(Appointment appointment)
@@ -69,24 +66,18 @@ namespace MedicalCenter.Services
                 throw new ArgumentNullException(nameof(appointment));
             }
 
-            _context.Appointments.Add(appointment);
-            await _context.SaveChangesAsync();
-
-            return appointment;
+            return await _appointmentRepository.PostAppointment(appointment);
         }
 
         public async Task<IActionResult> DeleteAppointment(int id)
         {
-            var appointment = await _context.Appointments.FindAsync(id);
-            if (appointment == null)
+            var appointment = await _appointmentRepository.GetAppointment(id);
+            if (appointment.Value == null)
             {
                 throw new KeyNotFoundException("Appointment not found.");
             }
 
-            _context.Appointments.Remove(appointment);
-            await _context.SaveChangesAsync();
-
-            return new NoContentResult();
+            return await _appointmentRepository.DeleteAppointment(id);
         }
     }
 }

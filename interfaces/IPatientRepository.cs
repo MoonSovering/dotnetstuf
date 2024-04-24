@@ -1,6 +1,6 @@
 ﻿using MedicalCenter.Models;
 
-namespace MedicalCenter.interfaces
+namespace MedicalCenter.Interfaces
 {
     public interface IPatientRepository
     {

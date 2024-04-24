@@ -1,7 +1,7 @@
 ﻿using MedicalCenter.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MedicalCenter.interfaces
+namespace MedicalCenter.Interfaces
 {
     public interface ISpecialityRepository
     {

@@ -1,28 +1,24 @@
-﻿using MedicalCenter.Context;
-using MedicalCenter.Controllers;
+﻿using MedicalCenter.Interfaces;
 using MedicalCenter.Models;
+using MedicalCenter.Repository;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MedicalCenter.Services
 {
-    public class DoctorService : IDoctorRepository
+    public class DoctorService: IDoctorRepository
     {
-        private readonly MedicalContext _context;
+        private readonly DoctorRepository _doctorRepository;
 
-        public DoctorService(MedicalContext context)
+        public DoctorService(DoctorRepository doctorRepository)
         {
-            _context = context;
+            _doctorRepository = doctorRepository;
         }
 
         public async Task<ActionResult<IEnumerable<Doctor>>> GetDoctors()
         {
-            var doctors = await _context.Doctors.ToListAsync();
+            var doctors = await _doctorRepository.GetDoctors();
 
-            if (!doctors.Any())
+            if (!doctors.Value.Any())
             {
                 throw new KeyNotFoundException("No Doctors found in the doctor list.");
             }
@@ -32,9 +28,9 @@ namespace MedicalCenter.Services
 
         public async Task<ActionResult<Doctor>> GetDoctor(int id)
         {
-            var doctor = await _context.Doctors.FindAsync(id);
+            var doctor = await _doctorRepository.GetDoctor(id);
 
-            if (doctor == null)
+            if (doctor.Value == null)
             {
                 throw new KeyNotFoundException("Doctor not found.");
             }
@@ -54,15 +50,13 @@ namespace MedicalCenter.Services
                 throw new ArgumentException("Doctor ID mismatch.");
             }
 
-            if (!_context.Doctors.Any(e => e.DoctorID == doctor.DoctorID))
+            var existingDoctor = await _doctorRepository.GetDoctor(doctor.DoctorID);
+            if (existingDoctor.Value == null)
             {
                 throw new KeyNotFoundException("Doctor not found.");
             }
 
-            _context.Entry(doctor).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-
-            return new NoContentResult();
+            return await _doctorRepository.PutDoctor(id, doctor);
         }
 
         public async Task<ActionResult<Doctor>> PostDoctor(Doctor doctor)
@@ -72,24 +66,18 @@ namespace MedicalCenter.Services
                 throw new ArgumentNullException(nameof(doctor));
             }
 
-            _context.Doctors.Add(doctor);
-            await _context.SaveChangesAsync();
-
-            return doctor;
+            return await _doctorRepository.PostDoctor(doctor);
         }
 
         public async Task<IActionResult> DeleteDoctor(int id)
         {
-            var doctor = await _context.Doctors.FindAsync(id);
-            if (doctor == null)
+            var doctor = await _doctorRepository.GetDoctor(id);
+            if (doctor.Value == null)
             {
                 throw new KeyNotFoundException("Doctor not found.");
             }
 
-            _context.Doctors.Remove(doctor);
-            await _context.SaveChangesAsync();
-
-            return new NoContentResult();
+            return await _doctorRepository.DeleteDoctor(id);
         }
     }
 }

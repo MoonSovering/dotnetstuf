@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MedicalCenter.Models;
-using MedicalCenter.interfaces;
+using MedicalCenter.Services;
 
 namespace MedicalCenter.Controllers
 {
@@ -8,9 +8,9 @@ namespace MedicalCenter.Controllers
     [ApiController]
     public class SpecialityController : ControllerBase
     {
-        private readonly ISpecialityRepository _specialityService;
+        private readonly SpecialityService _specialityService;
 
-        public SpecialityController(ISpecialityRepository specialityService)
+        public SpecialityController(SpecialityService specialityService)
         {
             _specialityService = specialityService;
         }

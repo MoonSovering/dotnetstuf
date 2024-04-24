@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MedicalCenter.Models;
-using MedicalCenter.interfaces;
+using MedicalCenter.Services;
 
 namespace MedicalCenter.Controllers
 {
@@ -9,9 +9,9 @@ namespace MedicalCenter.Controllers
     [ApiController]
     public class DoctorsController : ControllerBase
     {
-        private readonly IDoctorRepository _service;
+        private readonly DoctorService _service;
 
-        public DoctorsController(IDoctorRepository service)
+        public DoctorsController(DoctorService service)
         {
             _service = service;
         }

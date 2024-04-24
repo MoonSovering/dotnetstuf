@@ -1,5 +1,5 @@
 using MedicalCenter.Context;
-using MedicalCenter.interfaces;
+using MedicalCenter.Repository;
 using MedicalCenter.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,10 +16,16 @@ builder.Services.AddDbContext<MedicalContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("Connection"));
 });
-builder.Services.AddScoped<IPatientRepository, PatientService>();
-builder.Services.AddScoped<IDoctorRepository, DoctorService>();
-builder.Services.AddScoped<ISpecialityRepository, SpecialityService>();
-builder.Services.AddScoped<IAppointmentRepository, AppointmentService>();
+builder.Services.AddScoped<PatientService>();
+builder.Services.AddScoped<PatientRepository>();
+builder.Services.AddScoped<DoctorService>();
+builder.Services.AddScoped<DoctorRepository>();
+builder.Services.AddScoped<SpecialityService>();
+builder.Services.AddScoped<SpecialityRepository>();
+builder.Services.AddScoped<AppointmentService>();
+builder.Services.AddScoped<AppointmentRepository>();
+
+
 
 var app = builder.Build();
 

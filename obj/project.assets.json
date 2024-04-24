@@ -8370,19 +8370,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\USUARIO\\.nuget\\packages\\": {}
+    "C:\\Users\\HUAWEI\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\USUARIO\\Desktop\\.Net\\MedicalCenter\\MedicalCenter\\MedicalCenter.csproj",
+      "projectUniqueName": "C:\\Users\\HUAWEI\\Downloads\\dotnetv2\\dotnetv2\\MedicalCenter.csproj",
       "projectName": "MedicalCenter",
-      "projectPath": "C:\\Users\\USUARIO\\Desktop\\.Net\\MedicalCenter\\MedicalCenter\\MedicalCenter.csproj",
-      "packagesPath": "C:\\Users\\USUARIO\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\USUARIO\\Desktop\\.Net\\MedicalCenter\\MedicalCenter\\obj\\",
+      "projectPath": "C:\\Users\\HUAWEI\\Downloads\\dotnetv2\\dotnetv2\\MedicalCenter.csproj",
+      "packagesPath": "C:\\Users\\HUAWEI\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\HUAWEI\\Downloads\\dotnetv2\\dotnetv2\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\USUARIO\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\HUAWEI\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
